@@ -5,7 +5,6 @@ This is a dummy repository for testing purposes.
 ## Features
 
 - Dummy feature 1
-- Dummy feature 2
 
 ## Installation
 

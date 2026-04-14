@@ -1,13 +1,46 @@
-name: Notify on PR
+name: Notify Neubird on PR
+
 on:
   pull_request:
     types: [opened]
+
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: POST to webhook
+      - name: Send PR event to Neubird
+        env:
+          NEUBIRD_TOKEN: ${{ secrets.NEUBIRD_TOKEN }}
         run: |
-          curl -X POST https://your-endpoint.com/webhook \
+          PR_PAYLOAD=$(cat <<'EOF'
+          {
+            "number": ${{ github.event.pull_request.number }},
+            "title": "${{ github.event.pull_request.title }}",
+            "url": "${{ github.event.pull_request.html_url }}",
+            "author": "${{ github.event.pull_request.user.login }}",
+            "branch": "${{ github.event.pull_request.head.ref }}",
+            "base": "${{ github.event.pull_request.base.ref }}",
+            "repo": "${{ github.repository }}",
+            "commits": ${{ github.event.pull_request.commits }},
+            "additions": ${{ github.event.pull_request.additions }},
+            "deletions": ${{ github.event.pull_request.deletions }},
+            "changed_files": ${{ github.event.pull_request.changed_files }},
+            "draft": ${{ github.event.pull_request.draft }},
+            "created_at": "${{ github.event.pull_request.created_at }}"
+          }
+          EOF
+          )
+
+          PAYLOAD_ESCAPED=$(echo "$PR_PAYLOAD" | jq -c . | jq -Rs .)
+
+          curl -f -X POST https://robin.app.neubird.ai/api/v1/event \
             -H "Content-Type: application/json" \
-            -d "{\"pr_number\": \"${{ github.event.pull_request.number }}\", \"title\": \"${{ github.event.pull_request.title }}\", \"author\": \"${{ github.event.pull_request.user.login }}\", \"url\": \"${{ github.event.pull_request.html_url }}\"}"
+            -H "Authorization: Bearer $NEUBIRD_TOKEN" \
+            -d "{
+              \"event\": {
+                \"id\": \"evt-pr-${{ github.event.pull_request.number }}\",
+                \"title\": \"New PR: ${{ github.event.pull_request.title }}\",
+                \"payload\": $PAYLOAD_ESCAPED,
+                \"investigate\": false
+              }
+            }"

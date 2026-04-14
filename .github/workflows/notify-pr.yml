@@ -1,0 +1,13 @@
+name: Notify on PR
+on:
+  pull_request:
+    types: [opened]
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: POST to webhook
+        run: |
+          curl -X POST https://your-endpoint.com/webhook \
+            -H "Content-Type: application/json" \
+            -d "{\"pr_number\": \"${{ github.event.pull_request.number }}\", \"title\": \"${{ github.event.pull_request.title }}\", \"author\": \"${{ github.event.pull_request.user.login }}\", \"url\": \"${{ github.event.pull_request.html_url }}\"}"

@@ -14,7 +14,7 @@ jobs:
           TYPE: "github-notify-pr"
           SOURCE: "850f14ab-72b2-40ae-91d1-95182bcd793b"
         run: |
-          PR_PAYLOAD=$(cat <<'EOF'
+          PR_PAYLOAD=$(cat <<EOF
           {
             "number": ${{ github.event.pull_request.number }},
             "title": "${{ github.event.pull_request.title }}",

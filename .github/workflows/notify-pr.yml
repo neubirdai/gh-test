@@ -28,8 +28,8 @@ jobs:
             "changed_files": ${{ github.event.pull_request.changed_files }},
             "draft": ${{ github.event.pull_request.draft }},
             "created_at": "${{ github.event.pull_request.created_at }}",
-            "type": $TYPE,
-            "source": $SOURCE
+            "type": "$TYPE",
+            "source": "$SOURCE"
           }
           EOF
           )

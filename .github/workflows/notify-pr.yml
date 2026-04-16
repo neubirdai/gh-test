@@ -44,6 +44,6 @@ jobs:
                 \"id\": \"${{ github.event.pull_request.number }}\",
                 \"title\": \"New PR: ${{ github.event.pull_request.title }}\",
                 \"payload\": $PAYLOAD_ESCAPED,
-                \"investigate\": false
+                \"investigate\": true
               }
             }"

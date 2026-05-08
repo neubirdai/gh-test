@@ -13,6 +13,7 @@ jobs:
           NEUBIRD_TOKEN: ${{ secrets.NEUBIRD_TOKEN }}
           TYPE: "github-notify-pr"
           SOURCE: "850f14ab-72b2-40ae-91d1-95182bcd793b"
+          SLACK: "slack-test-1"
         run: |
           PR_PAYLOAD=$(cat <<EOF
           {
@@ -29,7 +30,8 @@ jobs:
             "draft": ${{ github.event.pull_request.draft }},
             "created_at": "${{ github.event.pull_request.created_at }}",
             "type": "$TYPE",
-            "source": "$SOURCE"
+            "source": "$SOURCE",
+            "slack_notify_channel": "$SLACK"
           }
           EOF
           )
